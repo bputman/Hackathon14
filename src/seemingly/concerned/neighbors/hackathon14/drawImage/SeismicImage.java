@@ -16,12 +16,13 @@ public class SeismicImage extends View {
 	
 	private boolean mShowText = false;
 	private int mTextPos = TEXTPOS_LEFT;
-	private Rect mBounds = new Rect();
-	private Paint mPaint;
-	private Paint mRectPaint;
+	private Rect mRectBounds = new Rect();
+	private Rect mLayerBounds = new Rect();
+	private Paint mRectPaint = new Paint();
+	private Paint mLayerPaint = new Paint();
 	private int mRectColor = Color.BLACK;
-	private Paint mLayerPaint;
 	private int mLayerColor = Color.BLUE;
+	private float mTextWidth;
 
     /**
      * Draw text to the left of the image
@@ -30,7 +31,7 @@ public class SeismicImage extends View {
     		
 	public SeismicImage(Context context) {
 		super(context);
-		//init();
+		init();
 	}
 	
     /**
@@ -87,37 +88,74 @@ public class SeismicImage extends View {
     }
 
 
-//    @Override
-//    protected void onDraw(Canvas canvas) {
-//        super.onDraw(canvas);
-//
-//        // Draw the shadow
-//        canvas.drawRect(mBounds, mPaint);
-//
-//        // Draw the label text
-////        if (getShowText()) {
-////            canvas.drawText(mData.get(mCurrentItem).mLabel, mTextX, mTextY, mTextPaint);
-////        }
-//
-//        // If the API level is less than 11, we can't rely on the view animation system to
-//        // do the scrolling animation. Need to tick it here and call postInvalidate() until the scrolling is done.
-////        if (Build.VERSION.SDK_INT < 11) {
-////            tickScrollAnimation();
-////            if (!mScroller.isFinished()) {
-////                postInvalidate();
-////            }
-////        }
-//    }
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        // Draw the shadow
+        canvas.drawRect(mRectBounds, mRectPaint);
+
+        canvas.drawRect(mLayerBounds, mLayerPaint);
+        // Draw the label text
+//        if (getShowText()) {
+//            canvas.drawText(mData.get(mCurrentItem).mLabel, mTextX, mTextY, mTextPaint);
+//        }
+
+        // If the API level is less than 11, we can't rely on the view animation system to
+        // do the scrolling animation. Need to tick it here and call postInvalidate() until the scrolling is done.
+//        if (Build.VERSION.SDK_INT < 11) {
+//            tickScrollAnimation();
+//            if (!mScroller.isFinished()) {
+//                postInvalidate();
+//            }
+//        }
+    }
     
+    /**
+     * Update size of the view and the contained views
+     */
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
+        //
+        // Set dimensions for text, pie chart, etc
+        //
+        // Account for padding
+        int xpad =  (getPaddingLeft() + getPaddingRight());
+        int ypad =  (getPaddingTop() + getPaddingBottom());
+
+        // Account for the label
+        if (mShowText) xpad += mTextWidth;
+
+        int ww = w - xpad;
+        int hh =  h - ypad;
+
+        mRectBounds = new Rect(0,0,ww,hh);
+
+        mRectBounds.offsetTo(getPaddingLeft(), getPaddingTop());
+        mRectPaint.setStrokeWidth(2);
+        mRectPaint.setColor(mRectColor);
+        
+        // Just a temporary holder of layer location
+        mLayerBounds = new Rect(0,hh/2,ww,hh/10);
+        
+        mLayerBounds.offsetTo(getPaddingLeft(), getPaddingTop());
+        mLayerPaint.setColor(mLayerColor);
+
+        //mPointerY = mTextY - (mTextHeight / 2.0f);
+        //float pointerOffset = mPieBounds.centerY() - mPointerY;
+    }
     /**
      * Initialize the control. This code is in a separate method so that it can be
      * called from both constructors.
      */
     private void init() {
+        
     	mRectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     	mRectPaint.setColor(mRectColor);
     	
     	mLayerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    	mLayerPaint.setColor(mLayerColor);
     	
     }
 }

@@ -9,14 +9,15 @@
     android:paddingTop="@dimen/activity_vertical_margin" >
     
     <!-- Set the defaults for a seismic image -->
+
  <seemingly.concerned.neighbors.hackathon14.drawImage.SeismicImage
      android:id="@+id/SeismicImage"
      android:layout_width="match_parent"
      android:layout_height="wrap_content"
+     android:layout_above="@+id/textView_Depth"
      android:padding="10dp"
-     custom:showText="true"
-     custom:labelPosition="left" />
-     
+     custom:labelPosition="left"
+     custom:showText="true" />
 
 <!-- TextView_MaxOffset sets the base position for all other views. -->
   	<TextView

@@ -3,6 +3,7 @@ package seemingly.concerned.neighbors.hackathon14;
 import seemingly.concerned.neighbors.hackathon14.drawImage.SeismicImage;
 import android.app.Activity;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +15,9 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
+	SeismicImage seismicImage;
+	SeekBar seekBar_Depth;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,14 +27,14 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         
         
-        //SeismicImage seis = (SeismicImage) this.findViewById(R.id.SeismicIm);
-        
+        seismicImage = (SeismicImage) this.findViewById(R.id.SeismicImage);
+        seismicImage.setBackgroundColor(Color.WHITE);
         
         // Depth inputs
-        TextView textView_Depth = (TextView) (findViewById(R.id.textView_Depth));
+        //TextView textView_Depth = (TextView) (findViewById(R.id.textView_Depth));
         final TextView t_Depth = new TextView(this);
         
-        SeekBar seekBar_Depth = (SeekBar) (findViewById(R.id.seekBar_Depth));
+        seekBar_Depth = (SeekBar) (findViewById(R.id.seekBar_Depth));
         
         // Set range of seekBar_Depth. True seekBar_Depth is [0,((max-min)/step)]
         final int step_Depth = 1;
