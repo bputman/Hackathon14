@@ -667,7 +667,39 @@ containing a value of this type.
 <tr><td><code>right</code></td><td>1</td><td></td></tr>
 </table>
          */
-        public static final int labelPosition=0x7f0100aa;
+        public static final int labelPosition=0x7f0100ae;
+        /** <p>Must be a floating point value, such as "<code>1.2</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int layerDepth=0x7f0100aa;
+        /** <p>Must be a floating point value, such as "<code>1.2</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int layerMaxOffset=0x7f0100ad;
+        /** <p>Must be a floating point value, such as "<code>1.2</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int layerPeakFreq=0x7f0100ac;
+        /** <p>Must be a floating point value, such as "<code>1.2</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int layerThickness=0x7f0100ab;
         /**  The layout to use for the search view. 
          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
@@ -1722,10 +1754,10 @@ containing a value of this type.
         public static final int split_action_bar=0x7f090004;
         public static final int submit_area=0x7f090040;
         public static final int tabMode=0x7f09000c;
-        public static final int textView_Depth=0x7f090047;
-        public static final int textView_MaxOffset=0x7f090044;
-        public static final int textView_PeakFreq=0x7f090045;
-        public static final int textView_Thickness=0x7f090046;
+        public static final int textView_Depth=0x7f090044;
+        public static final int textView_MaxOffset=0x7f090045;
+        public static final int textView_PeakFreq=0x7f090046;
+        public static final int textView_Thickness=0x7f090047;
         public static final int title=0x7f09002b;
         public static final int top=0x7f09001f;
         public static final int up=0x7f090001;
@@ -4049,13 +4081,22 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
            <colgroup align="left" />
            <tr><th>Attribute</th><th>Description</th></tr>
            <tr><td><code>{@link #SeismicImage_labelPosition seemingly.concerned.neighbors.hackathon14:labelPosition}</code></td><td></td></tr>
+           <tr><td><code>{@link #SeismicImage_layerDepth seemingly.concerned.neighbors.hackathon14:layerDepth}</code></td><td></td></tr>
+           <tr><td><code>{@link #SeismicImage_layerMaxOffset seemingly.concerned.neighbors.hackathon14:layerMaxOffset}</code></td><td></td></tr>
+           <tr><td><code>{@link #SeismicImage_layerPeakFreq seemingly.concerned.neighbors.hackathon14:layerPeakFreq}</code></td><td></td></tr>
+           <tr><td><code>{@link #SeismicImage_layerThickness seemingly.concerned.neighbors.hackathon14:layerThickness}</code></td><td></td></tr>
            <tr><td><code>{@link #SeismicImage_showSeisText seemingly.concerned.neighbors.hackathon14:showSeisText}</code></td><td></td></tr>
            </table>
            @see #SeismicImage_labelPosition
+           @see #SeismicImage_layerDepth
+           @see #SeismicImage_layerMaxOffset
+           @see #SeismicImage_layerPeakFreq
+           @see #SeismicImage_layerThickness
            @see #SeismicImage_showSeisText
          */
         public static final int[] SeismicImage = {
-            0x7f0100a9, 0x7f0100aa
+            0x7f0100a9, 0x7f0100aa, 0x7f0100ab, 0x7f0100ac,
+            0x7f0100ad, 0x7f0100ae
         };
         /**
           <p>This symbol is the offset where the {@link seemingly.concerned.neighbors.hackathon14.R.attr#labelPosition}
@@ -4073,7 +4114,63 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 </table>
           @attr name seemingly.concerned.neighbors.hackathon14:labelPosition
         */
-        public static final int SeismicImage_labelPosition = 1;
+        public static final int SeismicImage_labelPosition = 5;
+        /**
+          <p>This symbol is the offset where the {@link seemingly.concerned.neighbors.hackathon14.R.attr#layerDepth}
+          attribute's value can be found in the {@link #SeismicImage} array.
+
+
+          <p>Must be a floating point value, such as "<code>1.2</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name seemingly.concerned.neighbors.hackathon14:layerDepth
+        */
+        public static final int SeismicImage_layerDepth = 1;
+        /**
+          <p>This symbol is the offset where the {@link seemingly.concerned.neighbors.hackathon14.R.attr#layerMaxOffset}
+          attribute's value can be found in the {@link #SeismicImage} array.
+
+
+          <p>Must be a floating point value, such as "<code>1.2</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name seemingly.concerned.neighbors.hackathon14:layerMaxOffset
+        */
+        public static final int SeismicImage_layerMaxOffset = 4;
+        /**
+          <p>This symbol is the offset where the {@link seemingly.concerned.neighbors.hackathon14.R.attr#layerPeakFreq}
+          attribute's value can be found in the {@link #SeismicImage} array.
+
+
+          <p>Must be a floating point value, such as "<code>1.2</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name seemingly.concerned.neighbors.hackathon14:layerPeakFreq
+        */
+        public static final int SeismicImage_layerPeakFreq = 3;
+        /**
+          <p>This symbol is the offset where the {@link seemingly.concerned.neighbors.hackathon14.R.attr#layerThickness}
+          attribute's value can be found in the {@link #SeismicImage} array.
+
+
+          <p>Must be a floating point value, such as "<code>1.2</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name seemingly.concerned.neighbors.hackathon14:layerThickness
+        */
+        public static final int SeismicImage_layerThickness = 2;
         /**
           <p>This symbol is the offset where the {@link seemingly.concerned.neighbors.hackathon14.R.attr#showSeisText}
           attribute's value can be found in the {@link #SeismicImage} array.

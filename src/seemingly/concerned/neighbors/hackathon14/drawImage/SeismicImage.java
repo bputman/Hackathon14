@@ -23,6 +23,12 @@ public class SeismicImage extends View {
 	private int mRectColor = Color.BLACK;
 	private int mLayerColor = Color.BLUE;
 	private float mTextWidth;
+	
+	// Fields that influence the view, that need to be updated based on user inputs
+	private float depth;
+	private float thickness;
+	private float peakFreq;
+	private float maxOffset;
 
     /**
      * Draw text to the left of the image
@@ -80,12 +86,98 @@ public class SeismicImage extends View {
         mShowText = showText;
         invalidate();
     }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        // Do nothing. Do not call the superclass method--that would start a layout pass
-        // on this view's children. PieChart lays out its children in onSizeChanged().
+    
+	/**
+     * 
+     * @return Rect object representing the layer
+     */
+    public Rect getLayerBounds() {
+        return mLayerBounds;
     }
+
+    /**
+     * Update the layer based on user inputs
+     *
+     * @param Rect - the new layer bounds
+     */
+    public void setLayerBounds(Rect mLayerBounds) {
+        this.mLayerBounds = mLayerBounds;
+        invalidate();
+    }
+    
+	/**
+     * @return Depth of the layer
+     */
+    public float getDepth() {
+        return this.depth;
+    }
+
+    /**
+     * Update the layer depth based on user inputs
+     *
+     * @param float - the new layer depth
+     */
+    public void setDepth(float depth) {
+        this.depth = depth;
+        invalidate();
+    }
+    
+	/**
+     * @return Thickness of the layer
+     */
+    public float getThickness() {
+        return this.thickness;
+    }
+
+    /**
+     * Update the layer thickness based on user inputs
+     *
+     * @param float - the new layer thickness
+     */
+    public void setThickness(float thickness) {
+        this.thickness = thickness;
+        invalidate();
+    }
+    
+	/**
+     * @return peak frequency of the survey
+     */
+    public float getPeakFreq() {
+        return this.peakFreq;
+    }
+
+    /**
+     * Update the peak frequency based on user inputs
+     *
+     * @param float - the new peak frequency
+     */
+    public void setPeakFreq(float peakFreq) {
+        this.peakFreq = peakFreq;
+        invalidate();
+    }
+    
+	/**
+     * @return maximum offset of the survey
+     */
+    public float getMaxOffset() {
+        return this.maxOffset;
+    }
+
+    /**
+     * Update the maximum offset based on user inputs
+     *
+     * @param float - the new maximum offset
+     */
+    public void setMaxOffset(float maxOffset) {
+        this.maxOffset = maxOffset;
+        invalidate();
+    }
+
+//    @Override
+//    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+//        // Do nothing. Do not call the superclass method--that would start a layout pass
+//        // on this view's children. PieChart lays out its children in onSizeChanged().
+//    }
 
 
     @Override
@@ -93,7 +185,7 @@ public class SeismicImage extends View {
         super.onDraw(canvas);
 
         // Draw the shadow
-        canvas.drawRect(mRectBounds, mRectPaint);
+        //canvas.drawRect(mRectBounds, mRectPaint);
 
         canvas.drawRect(mLayerBounds, mLayerPaint);
         // Draw the label text

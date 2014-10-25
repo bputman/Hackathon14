@@ -16,6 +16,10 @@
      android:layout_height="wrap_content"
      android:layout_above="@+id/textView_Depth"
      android:padding="10dp"
+     custom:layerDepth="500"
+     custom:layerThickness="50"
+     custom:layerPeakFreq="25"
+     custom:layerMaxOffset="500"
      custom:labelPosition="left"
      custom:showText="true" />
 

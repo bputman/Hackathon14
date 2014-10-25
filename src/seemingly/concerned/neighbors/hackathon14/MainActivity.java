@@ -28,7 +28,7 @@ public class MainActivity extends Activity {
         
         
         seismicImage = (SeismicImage) this.findViewById(R.id.SeismicImage);
-        seismicImage.setBackgroundColor(Color.WHITE);
+        //seismicImage.setBackgroundColor(Color.WHITE);
         
         // Depth inputs
         //TextView textView_Depth = (TextView) (findViewById(R.id.textView_Depth));
@@ -61,6 +61,8 @@ public class MainActivity extends Activity {
 				int depth = min_Depth + (step_Depth*seekBar.getProgress());
 				t_Depth.setTextSize(depth);
 		        Toast.makeText(getApplicationContext(), String.valueOf(depth),Toast.LENGTH_SHORT).show();
+		        
+		        seismicImage.setDepth(depth);
 			}
         }); 
         

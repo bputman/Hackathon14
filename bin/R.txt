@@ -89,7 +89,11 @@ int attr indeterminateProgressStyle 0x7f010063
 int attr initialActivityCount 0x7f010084
 int attr isLightTheme 0x7f010002
 int attr itemPadding 0x7f010065
-int attr labelPosition 0x7f0100aa
+int attr labelPosition 0x7f0100ae
+int attr layerDepth 0x7f0100aa
+int attr layerMaxOffset 0x7f0100ad
+int attr layerPeakFreq 0x7f0100ac
+int attr layerThickness 0x7f0100ab
 int attr layout 0x7f010079
 int attr listChoiceBackgroundIndicator 0x7f01004c
 int attr listPopupWindowStyle 0x7f010046
@@ -403,10 +407,10 @@ int id showTitle 0x7f090012
 int id split_action_bar 0x7f090004
 int id submit_area 0x7f090040
 int id tabMode 0x7f09000c
-int id textView_Depth 0x7f090047
-int id textView_MaxOffset 0x7f090044
-int id textView_PeakFreq 0x7f090045
-int id textView_Thickness 0x7f090046
+int id textView_Depth 0x7f090044
+int id textView_MaxOffset 0x7f090045
+int id textView_PeakFreq 0x7f090046
+int id textView_Thickness 0x7f090047
 int id title 0x7f09002b
 int id top 0x7f09001f
 int id up 0x7f090001
@@ -827,8 +831,12 @@ int styleable SearchView_searchIcon 9
 int styleable SearchView_submitBackground 14
 int styleable SearchView_suggestionRowLayout 12
 int styleable SearchView_voiceIcon 10
-int[] styleable SeismicImage { 0x7f0100a9, 0x7f0100aa }
-int styleable SeismicImage_labelPosition 1
+int[] styleable SeismicImage { 0x7f0100a9, 0x7f0100aa, 0x7f0100ab, 0x7f0100ac, 0x7f0100ad, 0x7f0100ae }
+int styleable SeismicImage_labelPosition 5
+int styleable SeismicImage_layerDepth 1
+int styleable SeismicImage_layerMaxOffset 4
+int styleable SeismicImage_layerPeakFreq 3
+int styleable SeismicImage_layerThickness 2
 int styleable SeismicImage_showSeisText 0
 int[] styleable Spinner { 0x010100af, 0x010100d4, 0x01010175, 0x01010176, 0x01010262, 0x010102ac, 0x010102ad, 0x7f010075, 0x7f010076, 0x7f010077, 0x7f010078 }
 int styleable Spinner_android_background 1
