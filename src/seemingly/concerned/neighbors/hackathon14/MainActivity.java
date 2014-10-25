@@ -22,8 +22,11 @@ public class MainActivity extends Activity {
         
         setContentView(R.layout.activity_main);
         
+        
         //SeismicImage seis = (SeismicImage) this.findViewById(R.id.SeismicIm);
         
+        
+        // Depth inputs
         TextView textView_Depth = (TextView) (findViewById(R.id.textView_Depth));
         final TextView t_Depth = new TextView(this);
         
@@ -54,6 +57,106 @@ public class MainActivity extends Activity {
 				int depth = min_Depth + (step_Depth*seekBar.getProgress());
 				t_Depth.setTextSize(depth);
 		        Toast.makeText(getApplicationContext(), String.valueOf(depth),Toast.LENGTH_SHORT).show();
+			}
+        }); 
+        
+        // Thickness inputs
+        final TextView t_Thickness = new TextView(this);
+        
+        SeekBar seekBar_Thickness = (SeekBar) (findViewById(R.id.seekBar_Thickness));
+        
+        // Set range of seekBar_Thickness. True seekBar_Thickness is [0,((max-min)/step)]
+        final int step_Thickness = 1;
+        final int min_Thickness = 1;
+        final int max_Thickness = 200;
+        seekBar_Thickness.setMax((max_Thickness - min_Thickness)/step_Thickness);
+        
+        seekBar_Thickness.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				int depth = min_Thickness + (step_Thickness*seekBar.getProgress());
+				t_Thickness.setTextSize(depth);
+		        Toast.makeText(getApplicationContext(), String.valueOf(depth),Toast.LENGTH_SHORT).show();
+			}
+        }); 
+        
+     // PeakFreq inputs
+        final TextView t_PeakFreq = new TextView(this);
+        
+        SeekBar seekBar_PeakFreq = (SeekBar) (findViewById(R.id.seekBar_PeakFreq));
+        
+        // Set range of seekBar_PeakFreq. True seekBar_PeakFreq is [0,((max-min)/step)]
+        final int step_PeakFreq = 1;
+        final int min_PeakFreq = 1;
+        final int max_PeakFreq = 100;
+        seekBar_PeakFreq.setMax((max_PeakFreq - min_PeakFreq)/step_PeakFreq);
+        
+        seekBar_PeakFreq.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				int depth = min_PeakFreq + (step_PeakFreq*seekBar.getProgress());
+				t_PeakFreq.setTextSize(depth);
+		        Toast.makeText(getApplicationContext(), String.valueOf(depth),Toast.LENGTH_SHORT).show();
+			}
+        }); 
+        
+     // MaxOffset inputs
+        final TextView t_MaxOffset = new TextView(this);
+        
+        SeekBar seekBar_MaxOffset = (SeekBar) (findViewById(R.id.seekBar_MaxOffset));
+        
+        // Set range of seekBar_MaxOffset. True seekBar_MaxOffset is [0,((max-min)/step)]
+        final int step_MaxOffset = 1;
+        final int min_MaxOffset = 0;
+        final int max_MaxOffset = 2000;
+        seekBar_MaxOffset.setMax((max_MaxOffset - min_MaxOffset)/step_MaxOffset);
+        
+        seekBar_MaxOffset.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				int depth = min_MaxOffset + (step_MaxOffset*seekBar.getProgress());
+				t_MaxOffset.setTextSize(depth);
+				//Toast toast = new Toast(null);
+		        Toast.makeText(getApplicationContext(), String.valueOf(depth),1).show();
 			}
         }); 
     }
