@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -18,10 +19,10 @@ public class SeismicImage extends View {
 	private int mTextPos = TEXTPOS_LEFT;
 	private Rect mRectBounds = new Rect();
 	private Rect mLayerBounds = new Rect();
-	private Paint mRectPaint = new Paint();
-	private Paint mLayerPaint = new Paint();
-	private int mRectColor = Color.BLACK;
-	private int mLayerColor = Color.BLUE;
+	private Paint mRectPaint;
+	private Paint mLayerPaint;
+	private Paint mErrorBarPaint;
+	private float[] mErrorBarLines;
 	private float mTextWidth;
 	
 	// Fields that influence the view, that need to be updated based on user inputs
@@ -29,12 +30,36 @@ public class SeismicImage extends View {
 	private float thickness;
 	private float peakFreq;
 	private float maxOffset;
+	private int depth_Pixels;
+	private int thickness_Pixels;
+	private int peakFreq_Pixels;
+	private int maxOffset_Pixels;
+	private float depth_step;
+	private float depth_min;
+	private float depth_max;
+	private VariableChangeListener mVariableChangedListener;
+	
+	// Standard deviation of upper layer
+	//TODO standard devations
+	private int stdUpper = 10;
 
+	// Standard deviation of lower layer
+	private int stdLower = 20;
+	
+	
     /**
      * Draw text to the left of the image
      */
     public static final int TEXTPOS_LEFT = 0;
-    		
+    
+    /**
+     * Interface definition for a callback to be invoked when the current
+     * item changes.
+     */
+    public interface VariableChangeListener {
+        void setOnVariableChange(float depth);
+    }
+    
 	public SeismicImage(Context context) {
 		super(context);
 		init();
@@ -60,10 +85,15 @@ public class SeismicImage extends View {
 	   try {
 	       mShowText = a.getBoolean(R.styleable.SeismicImage_showSeisText, false);
 	       mTextPos = a.getInteger(R.styleable.SeismicImage_labelPosition, 0);
+	       depth = a.getFloat(R.styleable.SeismicImage_layerDepth,500);
+	       thickness = a.getFloat(R.styleable.SeismicImage_layerThickness,50);
+	       peakFreq = a.getFloat(R.styleable.SeismicImage_layerPeakFreq,25);
+	       maxOffset = a.getFloat(R.styleable.SeismicImage_layerMaxOffset,1000);
+	       
 	   } finally {
 	       a.recycle();
 	   }
-	   
+	   init();
 	}
 	
 	/**
@@ -119,6 +149,58 @@ public class SeismicImage extends View {
      */
     public void setDepth(float depth) {
         this.depth = depth;
+        depth_Pixels = (int) ((depth-depth_min)/this.getHeight());
+        invalidate();
+    }
+    
+	/**
+     * @return Depth of the layer
+     */
+    public float getDepthStep() {
+        return this.depth_step;
+    }
+
+    /**
+     * Update the layer depth based on user inputs
+     *
+     * @param float - the new layer depth
+     */
+    public void setDepthStep(float depth_step) {
+        this.depth_step = depth_step;
+        invalidate();
+    }
+    
+	/**
+     * @return Minimum depth where the layer can be located
+     */
+    public float getDepthMin() {
+        return this.depth_min;
+    }
+
+    /**
+     * Update the Minimum depth where the layer can be located based on user input
+     *
+     * @param float - the new layer minimum layer depth
+     */
+    public void setDepthMin(float depth_min) {
+        this.depth_min = depth_min;
+        invalidate();
+    }
+    
+	/**
+     * @return Maximum depth where the layer can be located
+     */
+    public float getDepthMax() {
+        return this.depth_max;
+    }
+
+    /**
+     * Update the Minimum depth where the layer can be located based on user input
+     *
+     * @param float - the new layer minimum layer depth
+     */
+    public void setDepthMax(float depth_max) {
+        this.depth_max = depth_max;
         invalidate();
     }
     
@@ -179,28 +261,28 @@ public class SeismicImage extends View {
 //        // on this view's children. PieChart lays out its children in onSizeChanged().
 //    }
 
-
+    /**
+     * Register a callback to be invoked when the depth variable changes.
+     *
+     * @param listener Can be null.
+     *                 The variable change listener to attach to this view.
+     */
+    public void setOnVariableChangeListener(VariableChangeListener listener) {
+        mVariableChangedListener = listener;
+    }
+    
+    
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        // Draw the shadow
-        //canvas.drawRect(mRectBounds, mRectPaint);
-
+        
+        // Draw the outer rectangle
+        canvas.drawRect(mRectBounds, mRectPaint);
+        
+        // Draw the layer
         canvas.drawRect(mLayerBounds, mLayerPaint);
-        // Draw the label text
-//        if (getShowText()) {
-//            canvas.drawText(mData.get(mCurrentItem).mLabel, mTextX, mTextY, mTextPaint);
-//        }
-
-        // If the API level is less than 11, we can't rely on the view animation system to
-        // do the scrolling animation. Need to tick it here and call postInvalidate() until the scrolling is done.
-//        if (Build.VERSION.SDK_INT < 11) {
-//            tickScrollAnimation();
-//            if (!mScroller.isFinished()) {
-//                postInvalidate();
-//            }
-//        }
+        
+        canvas.drawLines(mErrorBarLines, mErrorBarPaint);
     }
     
     /**
@@ -221,33 +303,90 @@ public class SeismicImage extends View {
 
         int ww = w - xpad;
         int hh =  h - ypad;
-
+        
         mRectBounds = new Rect(0,0,ww,hh);
-
         mRectBounds.offsetTo(getPaddingLeft(), getPaddingTop());
-        mRectPaint.setStrokeWidth(2);
-        mRectPaint.setColor(mRectColor);
         
-        // Just a temporary holder of layer location
-        mLayerBounds = new Rect(0,hh/2,ww,hh/10);
         
-        mLayerBounds.offsetTo(getPaddingLeft(), getPaddingTop());
-        mLayerPaint.setColor(mLayerColor);
-
-        //mPointerY = mTextY - (mTextHeight / 2.0f);
-        //float pointerOffset = mPieBounds.centerY() - mPointerY;
+        //TODO
+        // depth_Pixels and thickness_Pixels need to be updated HERE
+        float canvasToDepthSlope = hh/(depth_max-depth_min);
+        depth_Pixels = (int) (canvasToDepthSlope*depth);
+        thickness_Pixels = (int) (canvasToDepthSlope*thickness);
+        
+        // Set updated layer bounds
+        //mLayerBounds = new Rect(0,depth_Pixels,ww,(depth_Pixels+thickness_Pixels));
+        mLayerBounds = new Rect(0,0,ww,thickness_Pixels);
+        mLayerBounds.offsetTo(getPaddingLeft()+1, getPaddingTop()+depth_Pixels);
+//        mLayerBounds = new Rect(0,0,ww-2,50);
+//        mLayerBounds.offsetTo(getPaddingLeft()+1, getPaddingTop()+50);
+        
+        mErrorBarLines = new float[4*6]; // 6 lines. Each line is x0,y0,x1,y1
+        
+        int horzPos = 2*ww/3;
+        int errorWidth = ww/24;
+        
+        //Upper surface upper horizontal line
+        mErrorBarLines[0] = horzPos;
+        mErrorBarLines[1] = getPaddingTop()+depth_Pixels-stdUpper/2;
+        mErrorBarLines[2] = horzPos + errorWidth;
+        mErrorBarLines[3] = getPaddingTop()+depth_Pixels-stdUpper/2;
+        //Upper surface lower horizontal line
+        mErrorBarLines[4] = horzPos;
+        mErrorBarLines[5] = getPaddingTop()+depth_Pixels+stdUpper/2;
+        mErrorBarLines[6] = horzPos + errorWidth;
+        mErrorBarLines[7] = getPaddingTop()+depth_Pixels+stdUpper/2;
+        //Upper surface vertical line
+        mErrorBarLines[8] = horzPos + errorWidth/2;
+        mErrorBarLines[9] = getPaddingTop()+depth_Pixels+stdUpper/2;
+        mErrorBarLines[10] = horzPos + errorWidth/2;
+        mErrorBarLines[11] = getPaddingTop()+depth_Pixels-stdUpper/2;
+        
+        //Lower surface upper horizontal line
+        mErrorBarLines[12] = horzPos;
+        mErrorBarLines[13] = getPaddingTop()+depth_Pixels+thickness_Pixels-stdLower/2;
+        mErrorBarLines[14] = horzPos + errorWidth;
+        mErrorBarLines[15] = getPaddingTop()+depth_Pixels+thickness_Pixels-stdLower/2;
+        //Lower surface lower horizontal line
+        mErrorBarLines[16] = horzPos;
+        mErrorBarLines[17] = getPaddingTop()+depth_Pixels+thickness_Pixels+stdLower/2;
+        mErrorBarLines[18] = horzPos + errorWidth;
+        mErrorBarLines[19] = getPaddingTop()+depth_Pixels+thickness_Pixels+stdLower/2;
+        //Lower surface vertical line
+        mErrorBarLines[20] = horzPos + errorWidth/2;
+        mErrorBarLines[21] = getPaddingTop()+depth_Pixels+thickness_Pixels+stdLower/2;
+        mErrorBarLines[22] = horzPos + errorWidth/2;
+        mErrorBarLines[23] = getPaddingTop()+depth_Pixels+thickness_Pixels-stdLower/2;
     }
+    
     /**
      * Initialize the control. This code is in a separate method so that it can be
      * called from both constructors.
      */
-    private void init() {
-        
+    private void init() { 
+    	// Set the outer rectangle
     	mRectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    	mRectPaint.setColor(mRectColor);
+        mRectPaint.setStyle(Style.STROKE);
+        mRectPaint.setStrokeWidth(1);
+    	mRectPaint.setColor(Color.BLACK);
     	
+    	// Set the layer 
     	mLayerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    	mLayerPaint.setColor(mLayerColor);
+    	mLayerPaint.setStyle(Style.FILL);
+    	mLayerPaint.setStrokeWidth(1);
+    	mLayerPaint.setColor(Color.CYAN);
     	
+    	mErrorBarPaint = new Paint();
+    	mErrorBarPaint.setColor(Color.RED);
     }
+
+	public void setDepthMax(int depth_max) {
+		// TODO Auto-generated method stub
+		this.depth_max = depth_max;
+	}
+
+	public void setDepthMin(int depth_min) {
+		// TODO Auto-generated method stub
+		this.depth_min = depth_min;
+	}
 }
