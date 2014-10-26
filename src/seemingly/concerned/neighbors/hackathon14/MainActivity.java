@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
         // Set range of seekBar_Thickness. True seekBar_Thickness is [0,((max-min)/step)]
         final int step_Thickness = 1;
         final int min_Thickness = 0;
-        final int max_Thickness = 200;
+        final int max_Thickness = 500;
         // Set range of seekBar_PeakFreq. True seekBar_PeakFreq is [0,((max-min)/step)]
         // TODO how do I step a value by a non-integer?
         final int step_PeakFreq = 1;
@@ -53,6 +53,7 @@ public class MainActivity extends Activity {
         // Depth inputs
         //TextView textView_Depth = (TextView) (findViewById(R.id.textView_Depth));
         final TextView t_Depth = new TextView(this);
+        
         
         seekBar_Depth = (SeekBar) (findViewById(R.id.seekBar_Depth));
         

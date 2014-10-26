@@ -2,21 +2,15 @@ package seemingly.concerned.neighbors.hackathon14.drawImage;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
-import android.graphics.Rect;
-import android.os.Build;
+import android.graphics.*;
 import android.util.AttributeSet;
-import android.view.View;
+import android.view.*;
 import seemingly.concerned.neighbors.hackathon14.R;
 
 public class SeismicImage extends View {
 
 	
 	private boolean mShowText = false;
-	private int mTextPos = TEXTPOS_LEFT;
 	private Rect mRectBounds = new Rect();
 	private Rect mLayerBounds = new Rect();
 	private Paint mRectPaint;
@@ -37,27 +31,22 @@ public class SeismicImage extends View {
 	private float depth_step;
 	private float depth_min;
 	private float depth_max;
-	private VariableChangeListener mVariableChangedListener;
+	private VariableChangeListener mVariableChangeListener;
 	
 	// Standard deviation of upper layer
 	//TODO standard devations
 	private int stdUpper = 10;
 
 	// Standard deviation of lower layer
-	private int stdLower = 20;
+	private int stdLower = 20;	
 	
-	
-    /**
-     * Draw text to the left of the image
-     */
-    public static final int TEXTPOS_LEFT = 0;
     
     /**
      * Interface definition for a callback to be invoked when the current
      * item changes.
      */
     public interface VariableChangeListener {
-        void setOnVariableChange(float depth);
+        void OnVariableChanged(SeismicImage source, float depth);
     }
     
 	public SeismicImage(Context context) {
@@ -82,11 +71,10 @@ public class SeismicImage extends View {
 	        R.styleable.SeismicImage,
 	        0, 0);
 
+		//Default SeismicImage parameters
 	   try {
-	       mShowText = a.getBoolean(R.styleable.SeismicImage_showSeisText, false);
-	       mTextPos = a.getInteger(R.styleable.SeismicImage_labelPosition, 0);
 	       depth = a.getFloat(R.styleable.SeismicImage_layerDepth,500);
-	       thickness = a.getFloat(R.styleable.SeismicImage_layerThickness,50);
+	       thickness = a.getFloat(R.styleable.SeismicImage_layerThickness,100);
 	       peakFreq = a.getFloat(R.styleable.SeismicImage_layerPeakFreq,25);
 	       maxOffset = a.getFloat(R.styleable.SeismicImage_layerMaxOffset,1000);
 	       
@@ -141,6 +129,22 @@ public class SeismicImage extends View {
     public float getDepth() {
         return this.depth;
     }
+    
+//    class Variable extends Observable {
+//    	public void setVariable() {
+//    		setChanged();
+//    		notifyObservers();
+//    	}
+//    }
+//    
+//    class VariableObserver implements Observer {
+//
+//		@Override
+//		public void update(Observable observable, Object data) {
+//			// TODO Auto-generated method stub
+//			//onSizeChanged();
+//		}
+//    }
 
     /**
      * Update the layer depth based on user inputs
@@ -148,9 +152,23 @@ public class SeismicImage extends View {
      * @param float - the new layer depth
      */
     public void setDepth(float depth) {
+        //this.depth = depth;
+        if (this.depth != depth && mVariableChangeListener != null) {
+        	
+        	this.mVariableChangeListener.OnVariableChanged(this, depth);
+        }
         this.depth = depth;
-        depth_Pixels = (int) ((depth-depth_min)/this.getHeight());
         invalidate();
+    }
+    
+    /**
+     * Register a callback to be invoked when the depth variable changes.
+     *
+     * @param listener Can be null.
+     *                 The variable change listener to attach to this view.
+     */
+    public void setOnVariableChangeListener(VariableChangeListener listener) {
+        this.mVariableChangeListener = listener;
     }
     
 	/**
@@ -261,16 +279,6 @@ public class SeismicImage extends View {
 //        // on this view's children. PieChart lays out its children in onSizeChanged().
 //    }
 
-    /**
-     * Register a callback to be invoked when the depth variable changes.
-     *
-     * @param listener Can be null.
-     *                 The variable change listener to attach to this view.
-     */
-    public void setOnVariableChangeListener(VariableChangeListener listener) {
-        mVariableChangedListener = listener;
-    }
-    
     
     @Override
     protected void onDraw(Canvas canvas) {
@@ -282,6 +290,7 @@ public class SeismicImage extends View {
         // Draw the layer
         canvas.drawRect(mLayerBounds, mLayerPaint);
         
+        // Draw error bars
         canvas.drawLines(mErrorBarLines, mErrorBarPaint);
     }
     
@@ -290,73 +299,70 @@ public class SeismicImage extends View {
      */
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
-        //
-        // Set dimensions for text, pie chart, etc
-        //
+        
+        // Set dimensions for outline, layer, errorBars
+        
         // Account for padding
         int xpad =  (getPaddingLeft() + getPaddingRight());
         int ypad =  (getPaddingTop() + getPaddingBottom());
 
-        // Account for the label
-        if (mShowText) xpad += mTextWidth;
-
         int ww = w - xpad;
         int hh =  h - ypad;
         
-        mRectBounds = new Rect(0,0,ww,hh);
+        mRectBounds.set(0,0,ww,hh);
         mRectBounds.offsetTo(getPaddingLeft(), getPaddingTop());
         
-        
-        //TODO
-        // depth_Pixels and thickness_Pixels need to be updated HERE
+        //Update depth and thickness in terms of screen pixels
         float canvasToDepthSlope = hh/(depth_max-depth_min);
         depth_Pixels = (int) (canvasToDepthSlope*depth);
         thickness_Pixels = (int) (canvasToDepthSlope*thickness);
         
         // Set updated layer bounds
-        //mLayerBounds = new Rect(0,depth_Pixels,ww,(depth_Pixels+thickness_Pixels));
-        mLayerBounds = new Rect(0,0,ww,thickness_Pixels);
+        mLayerBounds.set(0,0,ww-2,thickness_Pixels);
         mLayerBounds.offsetTo(getPaddingLeft()+1, getPaddingTop()+depth_Pixels);
-//        mLayerBounds = new Rect(0,0,ww-2,50);
-//        mLayerBounds.offsetTo(getPaddingLeft()+1, getPaddingTop()+50);
+        //mLayerBounds = new Rect(0,0,ww-2,50);
+        //mLayerBounds.offsetTo(getPaddingLeft()+1, getPaddingTop()+50);
         
+        
+        // Create points for two error bars. This takes 6 lines.
         mErrorBarLines = new float[4*6]; // 6 lines. Each line is x0,y0,x1,y1
         
         int horzPos = 2*ww/3;
         int errorWidth = ww/24;
+        int upperLayer = getPaddingTop()+depth_Pixels;
+        int lowerLayer = getPaddingTop()+depth_Pixels+thickness_Pixels;
         
         //Upper surface upper horizontal line
         mErrorBarLines[0] = horzPos;
-        mErrorBarLines[1] = getPaddingTop()+depth_Pixels-stdUpper/2;
+        mErrorBarLines[1] = upperLayer-stdUpper/2;
         mErrorBarLines[2] = horzPos + errorWidth;
-        mErrorBarLines[3] = getPaddingTop()+depth_Pixels-stdUpper/2;
+        mErrorBarLines[3] = upperLayer-stdUpper/2;
         //Upper surface lower horizontal line
         mErrorBarLines[4] = horzPos;
-        mErrorBarLines[5] = getPaddingTop()+depth_Pixels+stdUpper/2;
+        mErrorBarLines[5] = upperLayer+stdUpper/2;
         mErrorBarLines[6] = horzPos + errorWidth;
-        mErrorBarLines[7] = getPaddingTop()+depth_Pixels+stdUpper/2;
+        mErrorBarLines[7] = upperLayer+stdUpper/2;
         //Upper surface vertical line
         mErrorBarLines[8] = horzPos + errorWidth/2;
-        mErrorBarLines[9] = getPaddingTop()+depth_Pixels+stdUpper/2;
+        mErrorBarLines[9] = upperLayer+stdUpper/2;
         mErrorBarLines[10] = horzPos + errorWidth/2;
-        mErrorBarLines[11] = getPaddingTop()+depth_Pixels-stdUpper/2;
+        mErrorBarLines[11] = upperLayer-stdUpper/2;
         
         //Lower surface upper horizontal line
         mErrorBarLines[12] = horzPos;
-        mErrorBarLines[13] = getPaddingTop()+depth_Pixels+thickness_Pixels-stdLower/2;
+        mErrorBarLines[13] = lowerLayer-stdLower/2;
         mErrorBarLines[14] = horzPos + errorWidth;
-        mErrorBarLines[15] = getPaddingTop()+depth_Pixels+thickness_Pixels-stdLower/2;
+        mErrorBarLines[15] = lowerLayer-stdLower/2;
         //Lower surface lower horizontal line
         mErrorBarLines[16] = horzPos;
-        mErrorBarLines[17] = getPaddingTop()+depth_Pixels+thickness_Pixels+stdLower/2;
+        mErrorBarLines[17] = lowerLayer+stdLower/2;
         mErrorBarLines[18] = horzPos + errorWidth;
-        mErrorBarLines[19] = getPaddingTop()+depth_Pixels+thickness_Pixels+stdLower/2;
+        mErrorBarLines[19] = lowerLayer+stdLower/2;
         //Lower surface vertical line
         mErrorBarLines[20] = horzPos + errorWidth/2;
-        mErrorBarLines[21] = getPaddingTop()+depth_Pixels+thickness_Pixels+stdLower/2;
+        mErrorBarLines[21] = lowerLayer+stdLower/2;
         mErrorBarLines[22] = horzPos + errorWidth/2;
-        mErrorBarLines[23] = getPaddingTop()+depth_Pixels+thickness_Pixels-stdLower/2;
+        mErrorBarLines[23] = lowerLayer-stdLower/2;
     }
     
     /**
@@ -364,20 +370,23 @@ public class SeismicImage extends View {
      * called from both constructors.
      */
     private void init() { 
+    	//this.setWillNotDraw(false);
     	// Set the outer rectangle
     	mRectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mRectPaint.setStyle(Style.STROKE);
+        mRectPaint.setStyle(Paint.Style.STROKE);
         mRectPaint.setStrokeWidth(1);
     	mRectPaint.setColor(Color.BLACK);
     	
     	// Set the layer 
     	mLayerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    	mLayerPaint.setStyle(Style.FILL);
+    	mLayerPaint.setStyle(Paint.Style.FILL);
     	mLayerPaint.setStrokeWidth(1);
     	mLayerPaint.setColor(Color.CYAN);
     	
+    	// Set the error bar
     	mErrorBarPaint = new Paint();
     	mErrorBarPaint.setColor(Color.RED);
+    	mErrorBarPaint.setStrokeWidth(3);
     }
 
 	public void setDepthMax(int depth_max) {
@@ -388,5 +397,17 @@ public class SeismicImage extends View {
 	public void setDepthMin(int depth_min) {
 		// TODO Auto-generated method stub
 		this.depth_min = depth_min;
+	}
+
+	@Override
+	protected void onLayout(boolean changed, int l, int t, int r, int b) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	protected void onMeasure(int x, int y) {
+		// TODO Auto-generated method stub
+		setMeasuredDimension(x,y);
 	}
 }

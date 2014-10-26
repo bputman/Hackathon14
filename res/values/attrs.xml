@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
    <declare-styleable name="SeismicImage">
-       <attr name="showSeisText" format="boolean" />
        <attr name="layerDepth" format="float" />
        <attr name="layerThickness" format="float" />
        <attr name="layerPeakFreq" format="float" />
        <attr name="layerMaxOffset" format="float" />
-       <attr name="labelPosition" format="enum">
-           <enum name="left" value="0"/>
-           <enum name="right" value="1"/>
-       </attr>
+       
    </declare-styleable>
 </resources>
 
